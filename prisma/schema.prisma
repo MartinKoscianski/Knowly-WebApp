@@ -1,0 +1,80 @@
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String    @id @default(uuid())
+  name                String
+  password            String?
+  notification        DateTime? 
+  creationAccountDate DateTime  @default(now())
+  lastConnexion       DateTime?
+  lastRevision        DateTime?
+  folders             Folder[]
+  revisionSessions    RevisionSession[]
+  lastModificationDate DateTime @updatedAt
+  flashcardSets       FlashcardSet[]
+}
+
+model Folder {
+  id             String   @id @default(uuid())
+  name           String
+  parentFolderId String?
+  parentFolder   Folder?  @relation("FolderToFolder", fields: [parentFolderId], references: [id])
+  subFolders     Folder[] @relation("FolderToFolder")
+  flashcardSets  FlashcardSet[]
+  creationDate   DateTime @default(now())
+  lastModificationDate DateTime @updatedAt
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model FlashcardSet {
+  id                   String   @id @default(uuid())
+  name                 String
+  description          String?
+  flashcards           Flashcard[]
+  folderId             String
+  folder               Folder   @relation(fields: [folderId], references: [id])
+  creationDate         DateTime @default(now())
+  lastModificationDate DateTime @updatedAt
+  userId               String
+  user                 User     @relation(fields: [userId], references: [id])
+}
+
+model Flashcard {
+  id               String   @id @default(uuid())
+  recto            String
+  verso            String
+  hint             String?
+  positionInSet    Int
+  flashcardSetId   String
+  flashcardSet     FlashcardSet @relation(fields: [flashcardSetId], references: [id])
+  creationDate     DateTime @default(now())
+  lastModificationDate DateTime @updatedAt
+  nextReview       DateTime?   // Prochaine date de révision
+  lastReviewed     DateTime?   // Dernière date de révision
+  reviewCount      Int      @default(0) // Nombre de révisions
+}
+
+model RevisionSession {
+  id                        String   @id @default(uuid())
+  date                      DateTime @default(now())
+  currentRevisionFlashcards String[]
+  nextRevisionFlashcards    String[]
+  completedFlashcards       String[]
+  currentRevisionCycle      Int
+  totalRevisionTime         Int
+  currentRevisionTime       Int
+  totalRevisionsNumber      Int
+  currentRevisionsNumber    Int
+  userId                    String
+  user                      User     @relation(fields: [userId], references: [id])
+}
