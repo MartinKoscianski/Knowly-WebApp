@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Home, Folder, BarChart2, LogOut, RefreshCw } from "lucide-react";
 
-export function AppSidebar() {
+export function AppSidebar({ pathname }: { pathname: string }) {
   return (
     <Sidebar className="h-screen">
       <SidebarHeader>
@@ -25,7 +25,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={typeof window !== 'undefined' && window.location.pathname === "/dashboard"}>
+                <SidebarMenuButton asChild isActive={pathname === "/dashboard"}>
                   <a href="/dashboard">
                     <Home className="mr-2" />
                     <span>Accueil</span>
@@ -33,7 +33,7 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={typeof window !== 'undefined' && window.location.pathname.startsWith("/dashboard/library") }>
+                <SidebarMenuButton asChild isActive={pathname.startsWith("/dashboard/library") }>
                   <a href="/dashboard/library">
                     <Folder className="mr-2" />
                     <span>Bibliothèque</span>
@@ -41,7 +41,7 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={typeof window !== 'undefined' && window.location.pathname.startsWith("/dashboard/revision") }>
+                <SidebarMenuButton asChild isActive={pathname.startsWith("/dashboard/revision") }>
                   <a href="/dashboard/revision">
                     <RefreshCw className="mr-2" />
                     <span>Révision</span>
