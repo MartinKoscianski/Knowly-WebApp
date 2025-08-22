@@ -64,9 +64,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // On veut comparer uniquement la date (pas l'heure)
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   // Récupérer toutes les flashcards dont nextReview est null ou <= aujourd'hui
   const flashcards = await prisma.flashcard.findMany({
@@ -76,8 +75,7 @@ export async function GET(req: NextRequest) {
       },
       OR: [
         { nextReview: null },
-        // On ignore l'heure dans la comparaison
-        { nextReview: { lte: new Date(today.getTime() + 24 * 60 * 60 * 1000 - 1) } },
+        { nextReview: { lte: today } },
       ],
     },
     include: {
