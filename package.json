@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "build": "next build --turbopack",
+    "lint": "eslint . --ext .ts,.tsx",
+    "build:prod": "npm run lint && npm run build"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.10.0",
